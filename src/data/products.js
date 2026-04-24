@@ -1,6 +1,8 @@
 // Product catalog for a Nairobi-style mini-market / duka.
 // Prices in KES reflect typical supermarket pricing.
-// SKU prefix: brand-size-code. Barcodes are illustrative (EAN-13 format).
+// Product images live in public/products/{SKU}.svg — bundled locally
+// so the POS renders correctly on day one, even before any
+// connectivity is set up. Matches the offline-first ethos.
 
 export const categories = [
   { id: 'all', label: 'All' },
@@ -12,7 +14,11 @@ export const categories = [
   { id: 'snacks', label: 'Snacks' },
 ]
 
-export const initialProducts = [
+// Base path respects Vite's base config (e.g. /tamupos-retail/ on GitHub Pages).
+const BASE = import.meta.env.BASE_URL || '/'
+const imgFor = (sku) => `${import.meta.env.BASE_URL}products/${sku}.svg`
+
+const BASE_PRODUCTS = [
   // Staples
   { sku: 'UNG-2KG-001', barcode: '6161106720011', name: 'Unga wa Ngano (Pembe) 2kg', category: 'staples', price: 215, stock: 48 },
   { sku: 'RIC-2KG-002', barcode: '6161106720028', name: 'Pishori Rice 2kg', category: 'staples', price: 420, stock: 32 },
@@ -54,5 +60,10 @@ export const initialProducts = [
   { sku: 'CAN-20G-503', barcode: '6161106725035', name: 'Cadbury Dairy Milk 20g', category: 'snacks', price: 80, stock: 84 },
   { sku: 'PEA-500-504', barcode: '6161106725042', name: 'Nzuri Peanuts 500g', category: 'snacks', price: 240, stock: 16 },
 ]
+
+export const initialProducts = BASE_PRODUCTS.map(p => ({
+  ...p,
+  image: imgFor(p.sku),
+}))
 
 export const LOW_STOCK_THRESHOLD = 10
