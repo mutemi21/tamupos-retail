@@ -11,8 +11,19 @@ import {
   OfflineBanner,
 } from './components/Views.jsx'
 
+const SCHEMA_VERSION = 'v2-images'
+
 export default function App() {
   const [view, setView] = useState('sell')
+  // Schema version check — invalidates cached products when our data shape
+  // changes (e.g. adding the image field). Without this, returning users
+  // would see stale data missing new fields.
+  if (typeof window !== 'undefined' &&
+      window.localStorage.getItem('tamupos-ret-schema') !== SCHEMA_VERSION) {
+    window.localStorage.removeItem('tamupos-ret-products')
+    window.localStorage.removeItem('tamupos-ret-sales')
+    window.localStorage.setItem('tamupos-ret-schema', SCHEMA_VERSION)
+  }
   const [products, setProducts] = useLocalStorage('tamupos-ret-products', initialProducts)
   const [cart, setCart] = useState([])
   const [customer, setCustomer] = useState('')
