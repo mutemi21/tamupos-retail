@@ -7,7 +7,7 @@ export default function Cart({ items, onQty, onRemove, onCheckout, customer, onC
   const total = subtotal + vat
 
   return (
-    <div className="flex flex-col h-full bg-white border-l border-slate-200">
+    <div className="flex flex-col h-full min-h-0 bg-white border-l border-slate-200">
       {/* Header */}
       <div className="p-4 border-b border-slate-200">
         <div className="flex items-center justify-between">
@@ -38,7 +38,7 @@ export default function Cart({ items, onQty, onRemove, onCheckout, customer, onC
       </div>
 
       {/* Items */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 min-h-0 overflow-y-auto">
         {items.length === 0 ? (
           <div className="p-10 text-center text-sm text-slate-400">
             Scan or tap a product to start

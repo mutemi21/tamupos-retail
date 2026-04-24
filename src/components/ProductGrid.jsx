@@ -33,7 +33,7 @@ export default function ProductGrid({ products, onAdd, onScan }) {
   }
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full min-h-0 bg-white">
       {/* Search + Scan */}
       <div className="p-4 border-b border-slate-200 space-y-3">
         <div className="flex gap-2">
@@ -86,7 +86,7 @@ export default function ProductGrid({ products, onAdd, onScan }) {
       </div>
 
       {/* Products */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 min-h-0 overflow-y-auto p-4">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 content-start">
           {filtered.map((p) => {
             const low = p.stock <= LOW_STOCK_THRESHOLD
@@ -102,9 +102,7 @@ export default function ProductGrid({ products, onAdd, onScan }) {
                     : 'border-slate-200 hover:border-jade-500 hover:shadow-md'
                 }`}
               >
-                <div className="aspect-square bg-slate-50 rounded-lg mb-2 flex items-center justify-center text-2xl">
-                  {emojiFor(p.category)}
-                </div>
+                <ProductImage product={p} />
                 <div className="text-xs text-slate-500 font-mono">{p.sku}</div>
                 <div className="text-sm font-medium leading-tight mt-1 line-clamp-2">
                   {p.name}
@@ -147,4 +145,28 @@ function emojiFor(cat) {
     personal: '🧼',
     snacks: '🍪',
   }[cat] || '📦'
+}
+
+// Loads the product image; falls back to a category emoji if the image
+// errors (offline, CDN rate-limited, stale URL). Keeps the UI intact
+// on the spotty networks this POS is built for.
+function ProductImage({ product }) {
+  const [errored, setErrored] = useState(false)
+  const showImage = product.image && !errored
+
+  return (
+    <div className="aspect-square bg-slate-50 rounded-lg mb-2 overflow-hidden flex items-center justify-center text-2xl">
+      {showImage ? (
+        <img
+          src={product.image}
+          alt={product.name}
+          loading="lazy"
+          onError={() => setErrored(true)}
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <span>{emojiFor(product.category)}</span>
+      )}
+    </div>
+  )
 }
